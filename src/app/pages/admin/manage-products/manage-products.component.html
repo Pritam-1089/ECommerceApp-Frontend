@@ -1,0 +1,53 @@
+<div class="manage-products">
+  <h2>Manage Products</h2>
+
+  <div class="form-section">
+    <h3>{{ editingId ? 'Edit Product' : 'Add New Product' }}</h3>
+    <form (ngSubmit)="saveProduct()">
+      <div class="form-row">
+        <div class="form-group"><label>Name</label><input [(ngModel)]="form.name" name="name" required></div>
+        <div class="form-group"><label>SKU</label><input [(ngModel)]="form.sku" name="sku" required></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea [(ngModel)]="form.description" name="desc" rows="3"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Price</label><input type="number" [(ngModel)]="form.price" name="price" required></div>
+        <div class="form-group"><label>Discount Price</label><input type="number" [(ngModel)]="form.discountPrice" name="discountPrice"></div>
+        <div class="form-group"><label>Stock</label><input type="number" [(ngModel)]="form.stockQuantity" name="stock" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select [(ngModel)]="form.categoryId" name="category">
+            @for (cat of categories; track cat.id) {
+              <option [value]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group"><label>Image URL</label><input [(ngModel)]="form.imageUrl" name="imageUrl"></div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-save">{{ editingId ? 'Update' : 'Create' }}</button>
+        @if (editingId) { <button type="button" (click)="cancelEdit()" class="btn-cancel">Cancel</button> }
+      </div>
+    </form>
+  </div>
+
+  <table class="products-table">
+    <thead>
+      <tr><th>ID</th><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Category</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      @for (p of products; track p.id) {
+        <tr>
+          <td>{{ p.id }}</td><td>{{ p.name }}</td><td>{{ p.sku }}</td>
+          <td>Rs. {{ p.discountPrice || p.price }}</td><td>{{ p.stockQuantity }}</td>
+          <td>{{ p.categoryName }}</td>
+          <td>
+            <button (click)="editProduct(p)" class="btn-edit">Edit</button>
+            <button (click)="deleteProduct(p.id)" class="btn-delete">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

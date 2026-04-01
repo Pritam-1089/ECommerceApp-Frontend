@@ -1,0 +1,33 @@
+<div class="product-card">
+  <a [routerLink]="['/products', product.id]">
+   <img
+  [src]="product.imageUrl || 'assets/no-image.png'"
+  (error)="onImageError($event)"
+  [alt]="product.name"
+  class="product-img">
+
+  </a>
+  <div class="product-info">
+    <span class="category">{{ product.categoryName }}</span>
+    <h3><a [routerLink]="['/products', product.id]">{{ product.name }}</a></h3>
+    <div class="price-row">
+      @if (product.discountPrice) {
+        <span class="price discounted">Rs. {{ product.discountPrice }}</span>
+        <span class="original-price">Rs. {{ product.price }}</span>
+      } @else {
+        <span class="price">Rs. {{ product.price }}</span>
+      }
+    </div>
+    <div class="rating">
+      @for (star of [1,2,3,4,5]; track star) {
+        <span [class.filled]="star <= product.averageRating">&#9733;</span>
+      }
+      <span class="count">({{ product.reviewCount }})</span>
+    </div>
+    @if (authService.isLoggedIn()) {
+      <button (click)="addToCart()" class="btn-cart" [disabled]="product.stockQuantity === 0">
+        {{ product.stockQuantity === 0 ? 'Out of Stock' : 'Add to Cart' }}
+      </button>
+    }
+  </div>
+</div>

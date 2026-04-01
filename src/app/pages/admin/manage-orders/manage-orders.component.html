@@ -1,0 +1,27 @@
+<div class="manage-orders">
+  <h2>Manage Orders</h2>
+  <table>
+    <thead>
+      <tr><th>Order #</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      @for (order of orders; track order.id) {
+        <tr>
+          <td>{{ order.orderNumber }}</td>
+          <td>{{ order.createdAt | date:'short' }}</td>
+          <td>{{ order.items.length }} items</td>
+          <td>Rs. {{ order.totalAmount }}</td>
+          <td><span class="status" [class]="order.status.toLowerCase()">{{ order.status }}</span></td>
+          <td>
+            <select (change)="updateStatus(order.id, $event)">
+              <option value="">Change Status</option>
+              @for (s of statuses; track s.value) {
+                <option [value]="s.value">{{ s.label }}</option>
+              }
+            </select>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

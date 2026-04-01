@@ -1,0 +1,27 @@
+<div class="orders-page">
+  <h2>My Orders</h2>
+  @for (order of orders; track order.id) {
+    <div class="order-card">
+      <div class="order-header">
+        <div>
+          <span class="order-num">{{ order.orderNumber }}</span>
+          <span class="order-date">{{ order.createdAt | date:'medium' }}</span>
+        </div>
+        <span class="status" [class]="order.status.toLowerCase()">{{ order.status }}</span>
+      </div>
+      <div class="order-items">
+        @for (item of order.items; track item.productId) {
+          <div class="order-item">
+            <span>{{ item.productName }} x {{ item.quantity }}</span>
+            <span>Rs. {{ item.totalPrice }}</span>
+          </div>
+        }
+      </div>
+      <div class="order-footer">
+        <span class="total">Total: Rs. {{ order.totalAmount }}</span>
+      </div>
+    </div>
+  } @empty {
+    <p class="no-orders">No orders yet. Start shopping!</p>
+  }
+</div>

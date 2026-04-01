@@ -1,0 +1,101 @@
+<div class="auth-page">
+  <!-- Floating Shopping Items Animation -->
+  <div class="floating-items">
+    <span class="float-item" style="--delay:0s; --x:10%; --y:20%">&#128091;</span>
+    <span class="float-item" style="--delay:1s; --x:80%; --y:15%">&#128090;</span>
+    <span class="float-item" style="--delay:2s; --x:20%; --y:70%">&#128087;</span>
+    <span class="float-item" style="--delay:3s; --x:75%; --y:65%">&#127890;</span>
+    <span class="float-item" style="--delay:0.5s; --x:50%; --y:80%">&#128094;</span>
+    <span class="float-item" style="--delay:1.5s; --x:90%; --y:40%">&#128092;</span>
+    <span class="float-item" style="--delay:2.5s; --x:5%; --y:45%">&#9996;</span>
+  </div>
+
+  <div class="auth-wrapper">
+    <!-- Left Panel - Branding -->
+    <div class="brand-panel">
+      <div class="brand-content">
+        <div class="bag-icon">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 20h40l-4 36H16L12 20z" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+            <path d="M22 20c0-6.627 4.477-12 10-12s10 5.373 10 12" stroke="white" stroke-width="2" fill="none"/>
+            <circle cx="26" cy="20" r="2" fill="white"/>
+            <circle cx="38" cy="20" r="2" fill="white"/>
+          </svg>
+        </div>
+        <h1>ShopEase</h1>
+        <p>Your one-stop destination for everything you love</p>
+        <div class="features">
+          <div class="feature-item">
+            <span class="feature-icon">&#128666;</span>
+            <span>Free Delivery</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">&#128274;</span>
+            <span>Secure Payment</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">&#128257;</span>
+            <span>Easy Returns</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel - Login Form -->
+    <div class="form-panel">
+      <div class="form-content">
+        <h2>Welcome Back!</h2>
+        <p class="subtitle">Sign in to continue shopping</p>
+
+        @if (error) {
+          <div class="error slide-in">{{ error }}</div>
+        }
+
+        <form (ngSubmit)="onSubmit()" class="login-form">
+          <div class="input-group">
+            <div class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <input type="email" [(ngModel)]="email" name="email" required placeholder="Email address"
+              (focus)="emailFocused=true" (blur)="emailFocused=false"
+              [class.active]="emailFocused || email">
+          </div>
+
+          <div class="input-group">
+            <div class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4"/>
+              </svg>
+            </div>
+            <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required
+              placeholder="Password" (focus)="passFocused=true" (blur)="passFocused=false"
+              [class.active]="passFocused || password">
+            <button type="button" class="toggle-pass" (click)="showPassword=!showPassword">
+              {{ showPassword ? '&#128064;' : '&#128065;' }}
+            </button>
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="loading" [class.loading]="loading">
+            <span class="btn-text">{{ loading ? '' : 'Sign In' }}</span>
+            @if (loading) {
+              <div class="spinner"></div>
+            }
+          </button>
+        </form>
+
+        <div class="divider">
+          <span>OR</span>
+        </div>
+
+        <p class="link">
+          Don't have an account?
+          <a routerLink="/register">Create Account</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

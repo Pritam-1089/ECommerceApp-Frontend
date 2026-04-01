@@ -1,0 +1,195 @@
+ <div class="checkout-page">
+
+  <h2>Checkout</h2>
+
+  <div class="checkout-layout">
+
+    <!-- LEFT SECTION -->
+    <div class="checkout-form">
+
+      <!-- ADDRESS SECTION -->
+      <div>
+        <h3>Delivery Address</h3>
+
+        <div class="form-group">
+          <label>Select Address</label>
+         <select [(ngModel)]="selectedAddressId"
+        (ngModelChange)="onAddressChange($event)">
+
+            <option *ngFor="let addr of addresses" [ngValue]="addr.id">
+              {{addr.fullName}} - {{addr.addressLine1}}, {{addr.city}}
+            </option>
+            <option [ngValue]="'new'">➕ Add New Address</option>
+          </select>
+        </div>
+
+        <!-- NEW ADDRESS FORM -->
+        <div *ngIf="isNewAddress">
+
+          <div class="form-group">
+            <label>Full Name</label>
+            <input [(ngModel)]="newAddress.fullName">
+          </div>
+
+          <div class="form-group">
+            <label>Phone</label>
+            <input [(ngModel)]="newAddress.phone">
+          </div>
+
+          <div class="form-group">
+            <label>Address Line 1</label>
+            <input [(ngModel)]="newAddress.addressLine1">
+          </div>
+
+          <div class="form-group">
+            <label>Address Line 2</label>
+            <input [(ngModel)]="newAddress.addressLine2">
+          </div>
+
+          <div class="form-row">
+  <input placeholder="City" [(ngModel)]="newAddress.city" readonly>
+  <input placeholder="Country" [(ngModel)]="newAddress.country" readonly>
+</div>
+
+
+        <div class="form-row">
+  <input placeholder="State" [(ngModel)]="newAddress.state" readonly>
+
+  <input placeholder="Postal Code"
+         [(ngModel)]="newAddress.postalCode"
+         (blur)="onPincodeChange()">
+</div>
+
+
+        </div>
+      </div>
+
+      <!-- PAYMENT SECTION -->
+      <div>
+   <h3>Payment Method</h3>
+
+<div class="payment-options">
+
+  <!-- CARD SECTION -->
+  <div class="payment-card"
+       [class.active]="selectedPayment === 0"
+       (click)="selectedPayment = 0">
+
+    <div class="payment-header">
+      <span>💳 Card / NetBanking</span>
+    </div>
+
+    <div class="payment-body" *ngIf="selectedPayment === 0">
+
+      <!-- Dropdown -->
+      <select [(ngModel)]="selectedCardOption">
+        <option value="credit">Credit Card</option>
+        <option value="debit">Debit Card</option>
+        <option value="netbanking">NetBanking</option>
+      </select>
+
+      <!-- CREDIT / DEBIT -->
+      <div *ngIf="selectedCardOption === 'credit' || selectedCardOption === 'debit'">
+        <input placeholder="Card Number">
+        <div class="form-row">
+          <input placeholder="MM/YY">
+          <input placeholder="CVV">
+        </div>
+      </div>
+
+      <!-- NETBANKING -->
+      <div *ngIf="selectedCardOption === 'netbanking'">
+
+        <!-- Bank Select -->
+        <select [(ngModel)]="selectedBank">
+          <option value="">Select Bank</option>
+          <option value="SBI">SBI</option>
+          <option value="HDFC">HDFC</option>
+          <option value="ICICI">ICICI</option>
+        </select>
+
+        <!-- 👇 IMPORTANT: Form only after bank selected -->
+        <div *ngIf="selectedBank">
+          <p>Proceed with {{ selectedBank }}</p>
+          <button class="pay-btn">Continue</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- UPI -->
+  <div class="payment-card"
+       [class.active]="selectedPayment === 1"
+       (click)="selectedPayment = 1">
+
+    <div class="payment-header">
+      <span>📱 UPI</span>
+    </div>
+
+    <div class="payment-body" *ngIf="selectedPayment === 1">
+      <input placeholder="Enter UPI ID (example@upi)">
+    </div>
+
+  </div>
+
+  <!-- COD -->
+  <div class="payment-card"
+       [class.active]="selectedPayment === 2"
+       (click)="selectedPayment = 2">
+
+    <div class="payment-header">
+      <span>💵 Cash on Delivery</span>
+    </div>
+
+    <div class="payment-body" *ngIf="selectedPayment === 2">
+      <p class="cod-text">Pay when your order is delivered.</p>
+    </div>
+
+  </div>
+
+</div>
+ <!-- PLACE ORDER BUTTON -->
+ <button class="btn-place-order"
+        (click)="placeOrder()"
+        [disabled]="placing || selectedPayment === -1">
+  {{ placing ? 'Placing Order...' : 'Place Order' }}
+ </button>
+
+<div class="order-summary">
+
+  <h3>Order Summary</h3>
+
+  <div *ngIf="cart">
+
+    <div *ngFor="let item of cart.items" class="summary-item">
+      <span>{{ item.productName }} x {{ item.quantity }}</span>
+      <span>₹ {{ item.totalPrice }}</span>
+    </div>
+
+    <hr>
+
+    <div class="summary-total">
+      <span>Total</span>
+      <span>₹ {{ cart.totalAmount }}</span>
+    </div>
+
+
+
+
+  </div>
+
+</div>
+
+
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+
+
+
+    </div>
+
+  </div>
+
+</div>

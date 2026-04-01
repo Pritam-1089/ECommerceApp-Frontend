@@ -1,0 +1,38 @@
+@if (product) {
+  <div class="detail-page">
+    <div class="product-image">
+      <img [src]="product.imageUrl || 'https://placehold.co/500x400'" [alt]="product.name">
+    </div>
+    <div class="product-info">
+      <span class="category">{{ product.categoryName }}</span>
+      <h1>{{ product.name }}</h1>
+      <div class="rating">
+        @for (star of [1,2,3,4,5]; track star) {
+          <span [class.filled]="star <= product.averageRating">&#9733;</span>
+        }
+        <span>({{ product.reviewCount }} reviews)</span>
+      </div>
+      <div class="price-section">
+        @if (product.discountPrice) {
+          <span class="price">Rs. {{ product.discountPrice }}</span>
+          <span class="original">Rs. {{ product.price }}</span>
+          <span class="discount">{{ getDiscount() }}% OFF</span>
+        } @else {
+          <span class="price">Rs. {{ product.price }}</span>
+        }
+      </div>
+      <p class="description">{{ product.description }}</p>
+      <p class="stock" [class.out]="product.stockQuantity === 0">
+        {{ product.stockQuantity > 0 ? 'In Stock (' + product.stockQuantity + ' available)' : 'Out of Stock' }}
+      </p>
+      <div class="quantity">
+        <button (click)="qty > 1 && qty = qty - 1">-</button>
+        <span>{{ qty }}</span>
+        <button (click)="qty < product.stockQuantity && qty = qty + 1">+</button>
+      </div>
+      @if (authService.isLoggedIn()) {
+        <button class="btn-add" (click)="addToCart()" [disabled]="product.stockQuantity === 0">Add to Cart</button>
+      }
+    </div>
+  </div>
+}

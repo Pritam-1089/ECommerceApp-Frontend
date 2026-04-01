@@ -1,0 +1,12 @@
+.navbar { background: #1a1a2e; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+.logo { color: #e94560; font-size: 1.5rem; font-weight: bold; text-decoration: none; }
+.nav-links { display: flex; gap: 1.5rem; align-items: center; }
+.nav-links a { color: #eee; text-decoration: none; transition: color 0.3s; }
+.nav-links a:hover { color: #e94560; }
+.cart-link { position: relative; }
+.badge { background: #e94560; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; position: absolute; top: -8px; right: -12px; }
+.user-name { color: #aaa; font-size: 0.9rem; }
+.btn-logout { background: none; border: 1px solid #e94560; color: #e94560; padding: 0.3rem 1rem; border-radius: 4px; cursor: pointer; }
+.btn-logout:hover { background: #e94560; color: white; }
+.btn-register { background: #e94560; color: white !important; padding: 0.3rem 1rem; border-radius: 4px; }
