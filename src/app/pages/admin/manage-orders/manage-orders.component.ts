@@ -22,19 +22,19 @@ export class ManageOrdersComponent implements OnInit {
   constructor(private orderService: OrderService) {}
 
   ngOnInit() {
-  this.loadOrders();
-}
+    this.loadOrders();
+  }
 
- loadOrders() {
-  this.orderService.getAllOrders().subscribe({
-    next: (res) => {
-      if (res.success) {
-        this.orders = res.data;
-      }
-    },
-    error: (err) => console.error(err)
-  });
-}
+  loadOrders() {
+    this.orderService.getAllOrders().subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.orders = res.data;
+        }
+      },
+      error: (err) => console.error(err)
+    });
+  }
 
 
   updateStatus(orderId: number, event: Event) {

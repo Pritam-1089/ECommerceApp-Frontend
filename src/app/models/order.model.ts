@@ -19,4 +19,6 @@ export interface OrderItem {
 export interface CreateOrder {
   shippingAddressId: number;
   paymentMethod: number;
+  productIds: number[];
+  totalAmount: number;
 }
