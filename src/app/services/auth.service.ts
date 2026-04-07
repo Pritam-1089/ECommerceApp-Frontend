@@ -34,12 +34,19 @@ export class AuthService {
 
   isLoggedIn(): boolean {
   const token = this.getToken();
+
+  // Step 1: token exist nahi hai
   if (!token) return false;
 
   try {
+    // Step 2: payload decode karo
     const payload = JSON.parse(atob(token.split('.')[1]));
+
+    // Step 3: expiry check karo
     return payload.exp * 1000 > Date.now();
-  } catch {
+
+  } catch (error) {
+    // Step 4: invalid token handle
     return false;
   }
 }
