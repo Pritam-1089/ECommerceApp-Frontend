@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { Order, CreateOrder } from '../models/order.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
-  private apiUrl = 'https://localhost:7252/api/orders';
+  private apiUrl = `${environment.apiUrl}/orders`;
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +27,6 @@ export class OrderService {
     return this.http.put<ApiResponse<Order>>(`${this.apiUrl}/${id}/status`, status);
   }
   getAllOrders(): Observable<ApiResponse<Order[]>> {
-  return this.http.get<ApiResponse<Order[]>>(`${this.apiUrl}/all`);
-}
-
+    return this.http.get<ApiResponse<Order[]>>(`${this.apiUrl}/all`);
+  }
 }

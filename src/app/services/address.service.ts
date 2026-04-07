@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Address, CreateAddress } from '../models/address.model';
 import { ApiResponse } from '../models/api-response.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AddressService {
 
-  private baseUrl = 'https://localhost:7252/api/address';
+  private baseUrl = `${environment.apiUrl}/address`;
 
   constructor(private http: HttpClient) {}
  getAddresses(): Observable<ApiResponse<Address[]>> {
@@ -30,6 +31,10 @@ export class AddressService {
 
   deleteAddress(id: number): Observable<ApiResponse<boolean>> {
     return this.http.delete<ApiResponse<boolean>>(`${this.baseUrl}/${id}`);
+  }
+
+  getAddressByPincode(pincode: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/pincode/${pincode}`, { responseType: 'text' });
   }
 
 }

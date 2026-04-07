@@ -7,7 +7,6 @@ import { OrderService } from '../../services/order.service';
 import { Cart } from '../../models/cart.model';
 import { AddressService } from '../../services/address.service';
 import { Address, CreateAddress } from '../../models/address.model';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-checkout',
@@ -41,7 +40,7 @@ export class CheckoutComponent implements OnInit {
   placing = false;
   error = '';
 // Payment type
-selectedPayment: number = 0; // initially kuch bhi select nahi
+selectedPayment: number = -1; // initially kuch bhi select nahi
 
 // Card dropdown
 selectedCardOption: 'credit' | 'debit' | 'netbanking' = 'credit';
@@ -55,8 +54,7 @@ selectedBank: string = '';
     private cartService: CartService,
     private orderService: OrderService,
     private router: Router,
-    private addressService: AddressService,
-    private http: HttpClient
+    private addressService: AddressService
   ) {}
 
   ngOnInit() {
@@ -129,57 +127,66 @@ placeOrder() {
 }
 createOrder() {
 
-  const payload: any = {
-    shippingAddressId: this.selectedAddressId,
-    paymentMethod: this.mapPayment()
+  const payload = {
+    shippingAddressId: Number(this.selectedAddressId),
+    paymentMethod: this.mapPayment(),
+
+    // 🔥 ADD THIS (VERY IMPORTANT)
+    productIds: this.cart?.items.map(i => i.productId) || [],
+    totalAmount: this.cart?.totalAmount || 0
   };
 
   this.orderService.createOrder(payload).subscribe({
     next: (res) => {
       this.placing = false;
+
       if (res.success) {
         this.router.navigate(['/orders']);
       } else {
         this.error = res.message || 'Order failed';
       }
     },
-    error: () => {
+    error: (err) => {
       this.placing = false;
-      this.error = 'Order failed';
+      this.error = err.error?.message || 'Order failed';
     }
   });
 }
+
 mapPayment(): number {
 
-  // CARD
-  if (this.selectedPayment === 0) {
-    if (this.selectedCardOption === 'credit') return 0;
-    if (this.selectedCardOption === 'debit') return 1;
-    if (this.selectedCardOption === 'netbanking') return 3;
-  }
+  // CARD (credit/debit/netbanking sab ek hi hai)
+  if (this.selectedPayment === 0) return 1;
 
   // UPI
   if (this.selectedPayment === 1) return 2;
 
   // COD
-  if (this.selectedPayment === 2) return 4;
+  if (this.selectedPayment === 2) return 0;
 
   return 0;
 }
+
 
   onPincodeChange() {
   const pincode = this.newAddress.postalCode;
   if (!pincode || pincode.length !== 6) return;
 
-  this.http.get<any[]>(`https://api.postalpincode.in/pincode/${pincode}`).subscribe({
-    next: (data) => {
+  this.addressService.getAddressByPincode(pincode).subscribe({
+    next: (res) => {
+      const data = JSON.parse(res);
+
       if (data[0].Status === 'Success') {
         const postOffice = data[0].PostOffice[0];
+
         this.newAddress.city = postOffice.District;
         this.newAddress.state = postOffice.State;
-        this.newAddress.country = 'India';
+        this.newAddress.country = postOffice.Country;
       }
-    }
+    },
+    error: (err) => console.error(err)
   });
+
 }
-}
+  }
+  
