@@ -45,4 +45,15 @@ export class ProductService {
   createCategory(category: any): Observable<ApiResponse<Category>> {
     return this.http.post<ApiResponse<Category>>(`${this.apiUrl}/categories`, category);
   }
+
+  // ✅ CATEGORY UPDATE
+updateCategory(id: number, category: any): Observable<ApiResponse<Category>> {
+  return this.http.put<ApiResponse<Category>>(`${this.apiUrl}/categories/${id}`, category);
+}
+
+// ✅ CATEGORY DELETE
+deleteCategory(id: number): Observable<ApiResponse<boolean>> {
+  return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/categories/${id}`);
+}
+
 }
