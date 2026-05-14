@@ -39,7 +39,7 @@ export class RegisterComponent {
     this.success = false;
     this.authService.register(this.form).subscribe({
       next: res => {
-        this.loading = false;
+        
         if (res.success) {
           this.success = true;
           setTimeout(() => this.router.navigate(['/']), 1500);

@@ -46,14 +46,24 @@ export class ProductService {
     return this.http.post<ApiResponse<Category>>(`${this.apiUrl}/categories`, category);
   }
 
-  // ✅ CATEGORY UPDATE
-updateCategory(id: number, category: any): Observable<ApiResponse<Category>> {
-  return this.http.put<ApiResponse<Category>>(`${this.apiUrl}/categories/${id}`, category);
+  updateCategory(id: number, category: any): Observable<ApiResponse<Category>> {
+    return this.http.put<ApiResponse<Category>>(`${this.apiUrl}/categories/${id}`, category);
+  }
+
+  deleteCategory(id: number): Observable<ApiResponse<boolean>> {
+    return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/categories/${id}`);
+  }
+  getReviews(productId: number) {
+  return this.http.get(`${this.apiUrl}/reviews/product/${productId}`);
 }
 
-// ✅ CATEGORY DELETE
-deleteCategory(id: number): Observable<ApiResponse<boolean>> {
-  return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/categories/${id}`);
+addReview(data: any) {
+  return this.http.post(`${this.apiUrl}/reviews`, data);
+}
+
+updateReview(id: number, data: any) {
+  return this.http.put(`${this.apiUrl}/reviews/${id}`, data);
 }
 
 }
+  

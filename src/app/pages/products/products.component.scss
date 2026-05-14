@@ -73,3 +73,20 @@
   text-align: center;
   padding: 3rem;
 }
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.empty {
+  text-align: center;
+  margin-top: 20px;
+  color: gray;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
