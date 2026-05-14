@@ -1,24 +1,57 @@
-<div class="products-page">
+<!-- 🔄 LOADING -->
+<app-loader *ngIf="loading"></app-loader>
+
+<!-- ❌ ERROR -->
+<div *ngIf="!loading && error" class="error">
+  {{ error }}
+</div>
+
+<!-- ✅ MAIN PAGE -->
+<div *ngIf="!loading && !error" class="products-page">
+
+  <!-- 📂 SIDEBAR -->
   <div class="sidebar">
     <h3>Categories</h3>
     <ul>
-      <li (click)="filterByCategory(0)" [class.active]="selectedCategory === 0">All Products</li>
+      <li (click)="filterByCategory(0)" [class.active]="selectedCategory === 0">
+        All Products
+      </li>
+
       @for (cat of categories; track cat.id) {
-        <li (click)="filterByCategory(cat.id)" [class.active]="selectedCategory === cat.id">{{ cat.name }}</li>
+        <li (click)="filterByCategory(cat.id)"
+            [class.active]="selectedCategory === cat.id">
+          {{ cat.name }}
+        </li>
       }
     </ul>
   </div>
+
+  <!-- 🛍️ MAIN CONTENT -->
   <div class="main">
+
+    <!-- 🔍 SEARCH -->
     <div class="search-bar">
-      <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="search()" placeholder="Search products...">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="search()"
+        placeholder="Search products..."
+      />
       <button (click)="search()">Search</button>
     </div>
+
+    <!-- 🛒 PRODUCTS -->
     <div class="products-grid">
+
       @for (product of products; track product.id) {
         <app-product-card [product]="product" />
       } @empty {
+        <!-- 📭 EMPTY STATE -->
         <p class="no-products">No products found.</p>
       }
+
     </div>
+
   </div>
+
 </div>

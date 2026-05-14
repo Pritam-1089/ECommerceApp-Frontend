@@ -1,38 +1,168 @@
-@if (product) {
-  <div class="detail-page">
-    <div class="product-image">
-      <img [src]="product.imageUrl || 'https://placehold.co/500x400'" [alt]="product.name">
-    </div>
-    <div class="product-info">
-      <span class="category">{{ product.categoryName }}</span>
-      <h1>{{ product.name }}</h1>
-      <div class="rating">
-        @for (star of [1,2,3,4,5]; track star) {
-          <span [class.filled]="star <= product.averageRating">&#9733;</span>
-        }
-        <span>({{ product.reviewCount }} reviews)</span>
-      </div>
-      <div class="price-section">
-        @if (product.discountPrice) {
-          <span class="price">Rs. {{ product.discountPrice }}</span>
-          <span class="original">Rs. {{ product.price }}</span>
-          <span class="discount">{{ getDiscount() }}% OFF</span>
-        } @else {
-          <span class="price">Rs. {{ product.price }}</span>
-        }
-      </div>
-      <p class="description">{{ product.description }}</p>
-      <p class="stock" [class.out]="product.stockQuantity === 0">
-        {{ product.stockQuantity > 0 ? 'In Stock (' + product.stockQuantity + ' available)' : 'Out of Stock' }}
-      </p>
-      <div class="quantity">
-        <button (click)="qty > 1 && qty = qty - 1">-</button>
-        <span>{{ qty }}</span>
-        <button (click)="qty < product.stockQuantity && qty = qty + 1">+</button>
-      </div>
-      @if (authService.isLoggedIn()) {
-        <button class="btn-add" (click)="addToCart()" [disabled]="product.stockQuantity === 0">Add to Cart</button>
-      }
+<div class="container">
+
+  <!-- PRODUCT -->
+  <div *ngIf="product" class="product-box">
+
+    <img [src]="product.imageUrl || 'https://placehold.co/400'" />
+
+    <div class="info">
+      <h2>{{ product.name }}</h2>
+      <!-- 🔥 FEATURES LIST -->
+<div class="top-features" *ngIf="features.length">
+  <span *ngFor="let f of features; let last = last">
+    {{ f }}<span *ngIf="!last"> | </span>
+  </span>
+</div>
+
+<!-- 🔥 SPEC BOX -->
+<div class="specs-card" *ngIf="specs">
+  <h3>Specifications</h3>
+
+  <div class="spec-grid">
+    <div class="spec-item" *ngFor="let item of specs | keyvalue">
+      <span class="label">{{item.key}}</span>
+      <span class="value">{{item.value}}</span>
     </div>
   </div>
-}
+</div>
+
+
+      <div class="stars">
+        <span *ngFor="let s of [1,2,3,4,5]"
+              [class.filled]="s <= ratingData.averageRating">★</span>
+        <span>({{ ratingData.totalReviews }} reviews)</span>
+      </div>
+
+      <h3>₹ {{ product.price }}</h3>
+
+      <button (click)="addToCart()">Add to Cart</button>
+    </div>
+
+  </div>
+
+  <div class="review-section">
+
+  <h2>Customer Reviews</h2>
+
+  <!-- ⭐ SUMMARY -->
+  <div class="review-summary">
+
+    <div class="summary-left">
+      <h1>{{ ratingData.averageRating || 0 }}</h1>
+
+      <div class="stars big">
+        <span *ngFor="let s of [1,2,3,4,5]"
+              [class.filled]="s <= ratingData.averageRating">★</span>
+      </div>
+
+      <p>{{ ratingData.totalReviews }} ratings</p>
+    </div>
+
+    <div class="summary-right">
+      <div *ngFor="let s of [5,4,3,2,1]" class="bar-row">
+        <span>{{ s }}★</span>
+
+        <div class="bar">
+          <div class="fill" [style.width.%]="getPercentage(s)"></div>
+        </div>
+
+        <span>{{ getCount(s) }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="review-section">
+
+  <h2>Customer Reviews</h2>
+
+  <!-- ⭐ FILTER -->
+  <div class="filters">
+    <button (click)="setFilter(0)" [class.active]="selectedFilter===0">All</button>
+    <button *ngFor="let s of [5,4,3,2,1]"
+            (click)="setFilter(s)"
+            [class.active]="selectedFilter===s">
+      {{ s }}★
+    </button>
+  </div>
+
+  <!-- ⭐ SUMMARY -->
+  <div class="glass-card summary">
+
+    <div class="left">
+      <h1>{{ ratingData.averageRating || 0 }}</h1>
+
+      <div class="stars big">
+        <span *ngFor="let s of [1,2,3,4,5]"
+              [class.filled]="s <= ratingData.averageRating">★</span>
+      </div>
+
+      <p>{{ ratingData.totalReviews }} ratings</p>
+    </div>
+
+    <div class="right">
+      <div *ngFor="let s of [5,4,3,2,1]" class="bar-row">
+        <span>{{ s }}★</span>
+        <div class="bar">
+          <div class="fill" [style.width.%]="getPercentage(s)"></div>
+        </div>
+        <span>{{ getCount(s) }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 📝 REVIEWS -->
+  <div class="review-list">
+
+    <div *ngFor="let r of filteredReviews" class="glass-card review-card">
+
+      <div class="header">
+        <div class="avatar">{{ r.userName[0] }}</div>
+
+        <div>
+          <b>{{ r.userName }}</b>
+          <div class="stars small">
+            <span *ngFor="let s of [1,2,3,4,5]"
+                  [class.filled]="s <= r.rating">★</span>
+          </div>
+        </div>
+
+        <span class="date">{{ r.createdAt | date:'shortDate' }}</span>
+      </div>
+
+      <p>{{ r.comment }}</p>
+
+      <button class="helpful">👍 Helpful</button>
+
+    </div>
+
+  </div>
+
+  <!-- ✍️ ADD REVIEW -->
+  <div class="glass-card add-review">
+
+    <h3>Write a Review</h3>
+
+    <div class="stars input">
+      <span *ngFor="let s of [1,2,3,4,5]"
+            (mouseenter)="setHover(s)"
+            (mouseleave)="clearHover()"
+            (click)="rating = s"
+            [class.filled]="s <= (hoverRating || rating)">
+        ★
+      </span>
+    </div>
+
+    <textarea [(ngModel)]="comment"
+              placeholder="Share your experience...">
+    </textarea>
+
+  <button type="button" (click)="submitReview()">
+  Submit Review
+</button>
+
+
+  </div>
+
+</div>
