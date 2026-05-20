@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+
   email = '';
   password = '';
   error = '';
@@ -20,18 +23,52 @@ export class LoginComponent {
   emailFocused = false;
   passFocused = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private notificationService: NotificationService
+  ) {}
 
   onSubmit() {
     this.loading = true;
     this.error = '';
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: res => {
-        
-        if (res.success) this.router.navigate(['/']);
-        else this.error = res.message;
+
+    this.authService.login({
+      email: this.email,
+      password: this.password
+    }).subscribe({
+
+      next: (res) => {
+        this.loading = false;
+
+        if (res.success) {
+
+          this.notificationService.showSuccess(
+            'Login successful'
+          );
+
+          this.router.navigate(['/']);
+
+        } else {
+
+          this.error = res.message;
+
+          this.notificationService.showError(
+            res.message || 'Invalid email or password'
+          );
+        }
       },
-      error: () => { this.loading = false; this.error = 'Login failed. Please try again.'; }
+
+      error: () => {
+        this.loading = false;
+
+        this.error =
+          'Login failed. Please try again.';
+
+        this.notificationService.showError(
+          'Invalid email or password'
+        );
+      }
     });
   }
 }
