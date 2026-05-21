@@ -1,10 +1,10 @@
- <div class="checkout-page">
+<div class="checkout-page">
 
   <h2>Checkout</h2>
 
   <div class="checkout-layout">
 
-    <!-- LEFT SECTION -->
+    
     <div class="checkout-form">
 
       <!-- ADDRESS SECTION -->
@@ -13,9 +13,7 @@
 
         <div class="form-group">
           <label>Select Address</label>
-         <select [(ngModel)]="selectedAddressId"
-        (ngModelChange)="onAddressChange($event)">
-
+          <select [(ngModel)]="selectedAddressId" (ngModelChange)="onAddressChange($event)">
             <option *ngFor="let addr of addresses" [ngValue]="addr.id">
               {{addr.fullName}} - {{addr.addressLine1}}, {{addr.city}}
             </option>
@@ -27,18 +25,24 @@
         <div *ngIf="isNewAddress">
 
           <div class="form-group">
-            <label>Full Name</label>
-            <input [(ngModel)]="newAddress.fullName">
+            <label>Full Name *</label>
+            <input [(ngModel)]="newAddress.fullName" [class.invalid]="fullNameInvalid"
+              (blur)="markAddressTouched('fullName')">
+            <span class="field-error" *ngIf="fullNameInvalid">Full name is required</span>
           </div>
 
           <div class="form-group">
-            <label>Phone</label>
-            <input [(ngModel)]="newAddress.phone">
+            <label>Phone *</label>
+            <input [(ngModel)]="newAddress.phone" maxlength="10" [class.invalid]="phoneInvalid"
+              (blur)="markAddressTouched('phone')">
+            <span class="field-error" *ngIf="phoneInvalid">Enter a valid 10-digit phone number</span>
           </div>
 
           <div class="form-group">
-            <label>Address Line 1</label>
-            <input [(ngModel)]="newAddress.addressLine1">
+            <label>Address Line 1 *</label>
+            <input [(ngModel)]="newAddress.addressLine1" [class.invalid]="addressLine1Invalid"
+              (blur)="markAddressTouched('addressLine1')">
+            <span class="field-error" *ngIf="addressLine1Invalid">Address is required</span>
           </div>
 
           <div class="form-group">
@@ -46,149 +50,154 @@
             <input [(ngModel)]="newAddress.addressLine2">
           </div>
 
+          <div class="form-group">
+            <label>Postal Code *</label>
+            <input placeholder="Enter 6-digit pincode" [(ngModel)]="newAddress.postalCode"
+              (keyup)="onPincodeChange()" maxlength="6" [class.invalid]="postalCodeInvalid"
+              (blur)="markAddressTouched('postalCode')">
+            <span class="field-error" *ngIf="postalCodeInvalid">Enter a valid 6-digit postal code</span>
+          </div>
+
           <div class="form-row">
-  <input placeholder="City" [(ngModel)]="newAddress.city" readonly>
-  <input placeholder="Country" [(ngModel)]="newAddress.country" readonly>
-</div>
+            <!-- FIX: removed readonly — user can type manually if pincode lookup fails -->
+            <div class="form-group" style="flex:1">
+              <label>City *</label>
+              <input placeholder="City" [(ngModel)]="newAddress.city"
+                [class.invalid]="cityInvalid"
+                (blur)="markAddressTouched('city')">
+              <span class="field-error" *ngIf="cityInvalid">City is required</span>
+            </div>
+            <div class="form-group" style="flex:1">
+              <label>State *</label>
+              <input placeholder="State" [(ngModel)]="newAddress.state"
+                [class.invalid]="stateInvalid"
+                (blur)="markAddressTouched('state')">
+              <span class="field-error" *ngIf="stateInvalid">State is required</span>
+            </div>
+          </div>
 
-
-        <div class="form-row">
-  <input placeholder="State" [(ngModel)]="newAddress.state" readonly>
-
- <input placeholder="Postal Code"
-       [(ngModel)]="newAddress.postalCode"
-       (keyup)="onPincodeChange()"
-       maxlength="6">
-
-</div>
-
+          <div class="form-group">
+            <label>Country *</label>
+            <input placeholder="Country" [(ngModel)]="newAddress.country"
+              [class.invalid]="countryInvalid"
+              (blur)="markAddressTouched('country')">
+            <span class="field-error" *ngIf="countryInvalid">Country is required</span>
+          </div>
 
         </div>
       </div>
 
       <!-- PAYMENT SECTION -->
       <div>
-   <h3>Payment Method</h3>
+        <h3>Payment Method</h3>
 
-<div class="payment-options">
+        <div class="payment-options">
 
-  <!-- CARD SECTION -->
-  <div class="payment-card"
-       [class.active]="selectedPayment === 0"
-       (click)="selectedPayment = 0">
+          <!-- CARD -->
+          <div class="payment-card" [class.active]="selectedPayment === 0" (click)="selectedPayment = 0">
+            <div class="payment-header">
+              <span>💳 Card / NetBanking</span>
+            </div>
 
-    <div class="payment-header">
-      <span>💳 Card / NetBanking</span>
-    </div>
+            <div class="payment-body" *ngIf="selectedPayment === 0">
+              <select [(ngModel)]="selectedCardOption">
+                <option value="credit">Credit Card</option>
+                <option value="debit">Debit Card</option>
+                <option value="netbanking">NetBanking</option>
+              </select>
 
-    <div class="payment-body" *ngIf="selectedPayment === 0">
+              <!-- CREDIT / DEBIT -->
+              <div *ngIf="selectedCardOption === 'credit' || selectedCardOption === 'debit'">
+                <input placeholder="Card Number (16 digits) *" [(ngModel)]="cardNumber"
+                  maxlength="16" [class.invalid]="cardNumberInvalid"
+                  (blur)="markCardTouched('cardNumber')">
+                <span class="field-error" *ngIf="cardNumberInvalid">Enter a valid 16-digit card number</span>
 
-      <!-- Dropdown -->
-      <select [(ngModel)]="selectedCardOption">
-        <option value="credit">Credit Card</option>
-        <option value="debit">Debit Card</option>
-        <option value="netbanking">NetBanking</option>
-      </select>
+                <div class="form-row" style="margin-top: 8px;">
+                  <div style="flex:1">
+                    <input placeholder="MM/YY *" [(ngModel)]="cardExpiry"
+                      maxlength="5" [class.invalid]="cardExpiryInvalid"
+                      (blur)="markCardTouched('cardExpiry')">
+                    <span class="field-error" *ngIf="cardExpiryInvalid">Enter valid expiry (MM/YY)</span>
+                  </div>
+                  <div style="flex:1">
+                    <input placeholder="CVV *" [(ngModel)]="cardCvv"
+                      maxlength="4" [class.invalid]="cardCvvInvalid"
+                      (blur)="markCardTouched('cardCvv')">
+                    <span class="field-error" *ngIf="cardCvvInvalid">Enter valid CVV</span>
+                  </div>
+                </div>
+              </div>
 
-      <!-- CREDIT / DEBIT -->
-      <div *ngIf="selectedCardOption === 'credit' || selectedCardOption === 'debit'">
-        <input placeholder="Card Number">
-        <div class="form-row">
-          <input placeholder="MM/YY">
-          <input placeholder="CVV">
+              <!-- NETBANKING -->
+              <div *ngIf="selectedCardOption === 'netbanking'">
+                <select [(ngModel)]="selectedBank">
+                  <option value="">Select Bank</option>
+                  <option value="SBI">SBI</option>
+                  <option value="HDFC">HDFC</option>
+                  <option value="ICICI">ICICI</option>
+                  <option value="Axis">Axis Bank</option>
+                  <option value="Kotak">Kotak</option>
+                </select>
+                <div *ngIf="selectedBank">
+                  <p style="font-size:14px; color:#555; margin-top:8px;">
+                    You will be redirected to {{ selectedBank }} to complete payment.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- UPI -->
+          <div class="payment-card" [class.active]="selectedPayment === 1" (click)="selectedPayment = 1">
+            <div class="payment-header">
+              <span>📱 UPI</span>
+            </div>
+            <!-- FIX: added [(ngModel)] binding and validation display -->
+            <div class="payment-body" *ngIf="selectedPayment === 1">
+              <input placeholder="Enter UPI ID (example@upi)" [(ngModel)]="upiId"
+                [class.invalid]="upiInvalid"
+                (blur)="upiTouched = true">
+              <span class="field-error" *ngIf="upiInvalid">Enter a valid UPI ID (e.g. name@upi)</span>
+            </div>
+          </div>
+
+          <!-- COD -->
+          <div class="payment-card" [class.active]="selectedPayment === 2" (click)="selectedPayment = 2">
+            <div class="payment-header">
+              <span>💵 Cash on Delivery</span>
+            </div>
+            <div class="payment-body" *ngIf="selectedPayment === 2">
+              <p class="cod-text">Pay when your order is delivered.</p>
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      <!-- NETBANKING -->
-      <div *ngIf="selectedCardOption === 'netbanking'">
+        <!-- PLACE ORDER BUTTON -->
+        <button class="btn-place-order" (click)="placeOrder()"
+          [disabled]="placing || selectedPayment === -1">
+          {{ placing ? 'Placing Order...' : 'Place Order' }}
+        </button>
 
-        <!-- Bank Select -->
-        <select [(ngModel)]="selectedBank">
-          <option value="">Select Bank</option>
-          <option value="SBI">SBI</option>
-          <option value="HDFC">HDFC</option>
-          <option value="ICICI">ICICI</option>
-        </select>
-
-        <!-- 👇 IMPORTANT: Form only after bank selected -->
-        <div *ngIf="selectedBank">
-          <p>Proceed with {{ selectedBank }}</p>
-          <button class="pay-btn">Continue</button>
+        <div class="order-summary">
+          <h3>Order Summary</h3>
+          <div *ngIf="cart">
+            <div *ngFor="let item of cart.items" class="summary-item">
+              <span>{{ item.productName }} x {{ item.quantity }}</span>
+              <span>₹ {{ item.totalPrice }}</span>
+            </div>
+            <hr>
+            <div class="summary-total">
+              <span>Total</span>
+              <span>₹ {{ cart.totalAmount }}</span>
+            </div>
+          </div>
         </div>
 
+        <p class="error" *ngIf="error">{{ error }}</p>
+
       </div>
-
-    </div>
-  </div>
-
-  <!-- UPI -->
-  <div class="payment-card"
-       [class.active]="selectedPayment === 1"
-       (click)="selectedPayment = 1">
-
-    <div class="payment-header">
-      <span>📱 UPI</span>
-    </div>
-
-    <div class="payment-body" *ngIf="selectedPayment === 1">
-      <input placeholder="Enter UPI ID (example@upi)">
-    </div>
-
-  </div>
-
-  <!-- COD -->
-  <div class="payment-card"
-       [class.active]="selectedPayment === 2"
-       (click)="selectedPayment = 2">
-
-    <div class="payment-header">
-      <span>💵 Cash on Delivery</span>
-    </div>
-
-    <div class="payment-body" *ngIf="selectedPayment === 2">
-      <p class="cod-text">Pay when your order is delivered.</p>
-    </div>
-
-  </div>
-
-</div>
- <!-- PLACE ORDER BUTTON -->
- <button class="btn-place-order"
-        (click)="placeOrder()"
-        [disabled]="placing || selectedPayment === -1">
-  {{ placing ? 'Placing Order...' : 'Place Order' }}
- </button>
-
-<div class="order-summary">
-
-  <h3>Order Summary</h3>
-
-  <div *ngIf="cart">
-
-    <div *ngFor="let item of cart.items" class="summary-item">
-      <span>{{ item.productName }} x {{ item.quantity }}</span>
-      <span>₹ {{ item.totalPrice }}</span>
-    </div>
-
-    <hr>
-
-    <div class="summary-total">
-      <span>Total</span>
-      <span>₹ {{ cart.totalAmount }}</span>
-    </div>
-
-
-
-
-  </div>
-
-</div>
-
-
-
-      <p class="error" *ngIf="error">{{ error }}</p>
-
-
 
     </div>
 

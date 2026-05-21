@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
@@ -9,66 +9,81 @@ import { NotificationService } from '../../services/notification.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
-  email = '';
-  password = '';
   error = '';
   loading = false;
   showPassword = false;
   emailFocused = false;
   passFocused = false;
+  loginForm: any;
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private fb: FormBuilder
   ) {}
 
-  onSubmit() {
-    this.loading = true;
-    this.error = '';
+  ngOnInit() {
+  this.loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
+  });
+  }
 
-    this.authService.login({
-      email: this.email,
-      password: this.password
-    }).subscribe({
+ onSubmit() {
 
-      next: (res) => {
-        this.loading = false;
+  if (this.loginForm.invalid) {
+    this.loginForm.markAllAsTouched();
+    return;
+  }
 
-        if (res.success) {
+  this.loading = true;
+  this.error = '';
 
-          this.notificationService.showSuccess(
-            'Login successful'
-          );
+  const payload = {
+    email: this.loginForm.value.email,
+    password: this.loginForm.value.password
+  };
 
-          this.router.navigate(['/']);
+  this.authService.login(payload).subscribe({
 
-        } else {
+    next: (res) => {
+      this.loading = false;
 
-          this.error = res.message;
+      if (res.success) {
 
-          this.notificationService.showError(
-            res.message || 'Invalid email or password'
-          );
-        }
-      },
+        this.notificationService.showSuccess(
+          'Login successful'
+        );
 
-      error: () => {
-        this.loading = false;
+        this.router.navigate(['/']);
 
-        this.error =
-          'Login failed. Please try again.';
+      } else {
+
+        this.error = res.message;
 
         this.notificationService.showError(
-          'Invalid email or password'
+          res.message || 'Invalid email or password'
         );
       }
-    });
-  }
+    },
+
+    error: () => {
+      this.loading = false;
+
+      this.error =
+        'Login failed. Please try again.';
+
+      this.notificationService.showError(
+        'Invalid email or password'
+      );
+    }
+  });
+}
 }

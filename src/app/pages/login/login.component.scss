@@ -296,3 +296,11 @@ input:focus, input.active {
   .feature-item { font-size: 0.8rem; padding: 0.4rem 0.7rem; }
   .form-panel { padding: 1.5rem; }
 }
+
+.validation-error {
+  color: red;
+  font-size: 12px;
+  margin-top: -8px;
+  margin-bottom: 10px;
+  display: block;
+}

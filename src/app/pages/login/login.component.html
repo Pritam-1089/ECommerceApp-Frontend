@@ -51,7 +51,7 @@
           <div class="error slide-in">{{ error }}</div>
         }
 
-        <form (ngSubmit)="onSubmit()" class="login-form">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
           <div class="input-group">
             <div class="input-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
@@ -59,27 +59,55 @@
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
             </div>
-            <input type="email" [(ngModel)]="email" name="email" required placeholder="Email address"
-              (focus)="emailFocused=true" (blur)="emailFocused=false"
-              [class.active]="emailFocused || email">
+            <input type="email" formControlName="email" placeholder="Email address" (focus)="emailFocused=true"
+              (blur)="emailFocused=false" [class.active]="emailFocused || loginForm.get('email')?.value"/>
           </div>
+          @if(loginForm.get('email')?.touched &&
+loginForm.get('email')?.invalid){
 
-          <div class="input-group">
-            <div class="input-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0110 0v4"/>
-              </svg>
-            </div>
-            <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required
-              placeholder="Password" (focus)="passFocused=true" (blur)="passFocused=false"
-              [class.active]="passFocused || password">
-            <button type="button" class="toggle-pass" (click)="showPassword=!showPassword">
-              {{ showPassword ? '&#128064;' : '&#128065;' }}
-            </button>
-          </div>
+  <small class="validation-error">
+    @if(loginForm.get('email')?.errors?.['required']){
+      Email is required
+    }
 
-          <button type="submit" class="btn-submit" [disabled]="loading" [class.loading]="loading">
+    @if(loginForm.get('email')?.errors?.['email']){
+      Enter valid email
+    }
+  </small>
+}
+         <div class="input-group">
+  <div class="input-icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0110 0v4"/>
+    </svg>
+  </div>
+
+  <input
+    [type]="showPassword ? 'text' : 'password'"
+    formControlName="password"
+    placeholder="Password"
+    (focus)="passFocused=true"
+    (blur)="passFocused=false"
+    [class.active]="passFocused || loginForm.get('password')?.value">
+
+  <button
+    type="button"
+    class="toggle-pass"
+    (click)="showPassword=!showPassword">
+    {{ showPassword ? '&#128064;' : '&#128065;' }}
+  </button>
+</div>
+
+@if(loginForm.get('password')?.touched &&
+loginForm.get('password')?.invalid){
+
+  <small class="validation-error">
+    Password is required
+  </small>
+}
+
+          <button type="submit" class="btn-submit" [disabled]="loading || loginForm.invalid" [class.loading]="loading">
             <span class="btn-text">{{ loading ? '' : 'Sign In' }}</span>
             @if (loading) {
               <div class="spinner"></div>
