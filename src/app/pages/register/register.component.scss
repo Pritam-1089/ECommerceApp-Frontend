@@ -338,3 +338,15 @@ input:focus {
   .form-panel { padding: 1.5rem; }
   .form-row { flex-direction: column; gap: 0; }
 }
+
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: #e94560;
+  margin-top: 4px;
+  padding-left: 4px;
+}
+
+.input-group.invalid input {
+  border-color: #e94560;
+}

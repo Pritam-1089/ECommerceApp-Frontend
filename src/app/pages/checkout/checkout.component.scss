@@ -1,4 +1,4 @@
- /* PAGE */
+/* PAGE */
 .checkout-page {
   max-width: 1200px;
   margin: 30px auto;
@@ -61,6 +61,7 @@ input, select {
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 input:focus, select:focus {
@@ -114,11 +115,6 @@ input:focus, select:focus {
   background: #f5f8ff;
 }
 
-.payment-header input {
-  accent-color: #2874f0;
-  transform: scale(1.2);
-}
-
 /* BODY */
 .payment-body {
   padding: 14px;
@@ -143,6 +139,7 @@ input:focus, select:focus {
   background: #fff;
   padding: 16px;
   border-radius: 10px;
+  margin-top: 16px;
   height: fit-content;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
@@ -188,6 +185,11 @@ input:focus, select:focus {
   background: #e85a12;
 }
 
+.btn-place-order:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
 /* ERROR */
 .error {
   color: red;
@@ -212,4 +214,15 @@ input:focus, select:focus {
   .checkout-layout {
     grid-template-columns: 1fr;
   }
+}
+
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: red;
+  margin-top: 4px;
+}
+
+input.invalid {
+  border-color: red;
 }

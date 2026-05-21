@@ -20,13 +20,24 @@ export class RegisterComponent {
     lastName: '',
     email: '',
     password: '',
+    confirmPassword: '',
     phone: ''
+  };
+
+  touched = {
+    firstName: false,
+    lastName: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+    phone: false
   };
 
   error = '';
   success = false;
   loading = false;
   showPassword = false;
+  showConfirmPassword = false;
   passwordStrength = 0;
 
   constructor(
@@ -34,6 +45,28 @@ export class RegisterComponent {
     private router: Router,
     private notificationService: NotificationService
   ) {}
+
+  markTouched(field: keyof typeof this.touched) {
+    this.touched[field] = true;
+  }
+
+  get firstNameInvalid() { return this.touched.firstName && this.form.firstName.trim() === ''; }
+  get lastNameInvalid() { return this.touched.lastName && this.form.lastName.trim() === ''; }
+  get emailInvalid() { return this.touched.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.email); }
+  get passwordInvalid() { return this.touched.password && this.form.password.length < 6; }
+  get confirmPasswordInvalid() { return this.touched.confirmPassword && this.form.confirmPassword !== this.form.password; }
+  get phoneInvalid() { return this.touched.phone && !/^[0-9]{10}$/.test(this.form.phone); }
+
+  get isFormValid(): boolean {
+    return (
+      this.form.firstName.trim() !== '' &&
+      this.form.lastName.trim() !== '' &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.email) &&
+      this.form.password.length >= 6 &&
+      this.form.confirmPassword === this.form.password &&
+      /^[0-9]{10}$/.test(this.form.phone)
+    );
+  }
 
   checkPasswordStrength() {
     const p = this.form.password;
@@ -47,18 +80,25 @@ export class RegisterComponent {
     if (/[0-9]/.test(p)) strength += 15;
     if (/[^a-zA-Z0-9]/.test(p)) strength += 20;
 
-    this.passwordStrength =
-      Math.min(100, strength);
+    this.passwordStrength = Math.min(100, strength);
   }
 
   onSubmit() {
+
+    Object.keys(this.touched).forEach(
+      key => (this.touched[key as keyof typeof this.touched] = true)
+    );
+
+    if (!this.isFormValid) return;
 
     this.loading = true;
     this.error = '';
     this.success = false;
 
+    const { confirmPassword, ...payload } = this.form;
+
     this.authService
-      .register(this.form)
+      .register(payload)
       .subscribe({
 
         next: (res) => {
