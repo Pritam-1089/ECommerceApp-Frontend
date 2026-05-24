@@ -15,8 +15,8 @@ export class OrderService {
     return this.http.post<ApiResponse<Order>>(this.apiUrl, dto);
   }
 
-  getMyOrders(): Observable<ApiResponse<Order[]>> {
-    return this.http.get<ApiResponse<Order[]>>(this.apiUrl);
+  getMyOrders(page: number = 1, pageSize: number = 10): Observable<ApiResponse<Order[]>> {
+    return this.http.get<ApiResponse<Order[]>>(`${this.apiUrl}?page=${page}&pageSize=${pageSize}`);
   }
 
   getOrderById(id: number): Observable<ApiResponse<Order>> {
@@ -26,7 +26,8 @@ export class OrderService {
   updateOrderStatus(id: number, status: number): Observable<ApiResponse<Order>> {
     return this.http.put<ApiResponse<Order>>(`${this.apiUrl}/${id}/status`, status);
   }
-  getAllOrders(): Observable<ApiResponse<Order[]>> {
-    return this.http.get<ApiResponse<Order[]>>(`${this.apiUrl}/all`);
+
+  getAllOrders(page: number = 1, pageSize: number = 10): Observable<ApiResponse<Order[]>> {
+    return this.http.get<ApiResponse<Order[]>>(`${this.apiUrl}/all?page=${page}&pageSize=${pageSize}`);
   }
 }

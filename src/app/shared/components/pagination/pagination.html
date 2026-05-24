@@ -1,0 +1,9 @@
+<button (click)="onPrev()" [disabled]="currentPage === 1">Previous</button>
+<span>Page {{ currentPage }} of {{ totalPages }}</span>
+<button (click)="onNext()" [disabled]="currentPage === totalPages">Next</button>
+
+<select (change)="onSizeChange($event)">
+  <option value="10">10</option>
+  <option value="25">25</option>
+  <option value="50">50</option>
+</select>

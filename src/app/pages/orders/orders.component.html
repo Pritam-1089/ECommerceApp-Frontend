@@ -24,4 +24,11 @@
   } @empty {
     <p class="no-orders">No orders yet. Start shopping!</p>
   }
+
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [pageSize]="pageSize"
+    (pageChanged)="onPageChange($event)">
+  </app-pagination>
 </div>
