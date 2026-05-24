@@ -24,4 +24,11 @@
       }
     </tbody>
   </table>
+
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [pageSize]="pageSize"
+    (pageChanged)="onPageChange($event)">
+  </app-pagination>
 </div>

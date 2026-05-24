@@ -119,7 +119,7 @@ export class RegisterComponent {
 
           } else {
 
-            this.error = res.message;
+            this.error = res.message ?? 'Something went wrong';
 
             this.notificationService.showError(
               res.message || 'Registration failed'

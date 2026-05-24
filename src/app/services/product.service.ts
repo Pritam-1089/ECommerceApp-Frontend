@@ -10,20 +10,26 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<ApiResponse<Product[]>> {
-    return this.http.get<ApiResponse<Product[]>>(`${this.apiUrl}/products`);
+  getAll(page: number = 1, pageSize: number = 10): Observable<ApiResponse<Product[]>> {
+  return this.http.get<ApiResponse<Product[]>>(
+    `${this.apiUrl}/products?page=${page}&pageSize=${pageSize}`
+   );
   }
 
   getById(id: number): Observable<ApiResponse<Product>> {
     return this.http.get<ApiResponse<Product>>(`${this.apiUrl}/products/${id}`);
   }
 
-  getByCategory(categoryId: number): Observable<ApiResponse<Product[]>> {
-    return this.http.get<ApiResponse<Product[]>>(`${this.apiUrl}/products/category/${categoryId}`);
+  getByCategory(categoryId: number, page: number = 1, pageSize: number = 10): Observable<ApiResponse<Product[]>> {
+   return this.http.get<ApiResponse<Product[]>>(
+   `${this.apiUrl}/products/category/${categoryId}?page=${page}&pageSize=${pageSize}`
+   );
   }
 
-  search(query: string): Observable<ApiResponse<Product[]>> {
-    return this.http.get<ApiResponse<Product[]>>(`${this.apiUrl}/products/search?q=${query}`);
+  search(query: string, page: number = 1, pageSize: number = 10): Observable<ApiResponse<Product[]>> {
+   return this.http.get<ApiResponse<Product[]>>(
+    `${this.apiUrl}/products/search?q=${query}&page=${page}&pageSize=${pageSize}`
+   );
   }
 
   create(product: CreateProduct): Observable<ApiResponse<Product>> {

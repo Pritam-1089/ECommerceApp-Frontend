@@ -42,15 +42,20 @@
 
     <!-- 🛒 PRODUCTS -->
     <div class="products-grid">
-
       @for (product of products; track product.id) {
         <app-product-card [product]="product" />
       } @empty {
-        <!-- 📭 EMPTY STATE -->
         <p class="no-products">No products found.</p>
       }
-
     </div>
+
+    <!-- 📄 PAGINATION -->
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      [pageSize]="pageSize"
+      (pageChanged)="onPageChange($event)">
+    </app-pagination>
 
   </div>
 

@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
 
       } else {
 
-        this.error = res.message;
+        this.error = res.message ?? 'Something went wrong';
 
         this.notificationService.showError(
           res.message || 'Invalid email or password'
