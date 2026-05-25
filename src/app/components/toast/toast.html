@@ -1,11 +1,8 @@
 <div class="toast-container">
-  <div
-    class="toast"
-    *ngFor="let t of toasts; let i = index"
-    [ngClass]="t.type"
-  >
-    <span>{{ t.message }}</span>
-
-    <button (click)="removeToast(i)">✕</button>
-  </div>
+  @for (t of toasts; track t.message) {
+    <div class="toast" [ngClass]="t.type">
+      <span>{{ t.message }}</span>
+      <button (click)="removeToast($index)">✕</button>
+    </div>
+  }
 </div>

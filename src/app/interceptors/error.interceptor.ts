@@ -10,37 +10,27 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-
       console.error('HTTP Error:', error);
 
       switch (error.status) {
-
         case 0:
-          alert('No internet connection');
+          console.error('No internet connection');
           break;
-
 
         case 401:
-
-  if (req.url.includes('/login') || req.url.includes('/register')) {
-    alert('Invalid username or password');
-    break;
-  }
-
-  alert('Session expired. Please login again.');
-
-  authService.logout();
-  router.navigate(['/login']);
-  break;
-
-
-        case 403:
-          alert('Access denied');
+          if (req.url.includes('/login') || req.url.includes('/register')) {
+            break;
+          }
+          authService.logout(true);
+          router.navigate(['/login']);
           break;
 
+        case 403:
+          console.error('Access denied');
+          break;
 
         case 500:
-          alert('Something went wrong');
+          console.error('Something went wrong');
           break;
 
         default:
