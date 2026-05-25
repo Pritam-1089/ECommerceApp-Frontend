@@ -37,6 +37,7 @@
 
 .main {
   flex: 1;
+  min-width: 0; // 👈 overflow rok ta hai
 }
 
 .search-bar {
@@ -73,6 +74,7 @@
   text-align: center;
   padding: 3rem;
 }
+
 .error {
   color: red;
   text-align: center;
@@ -85,8 +87,45 @@
   color: gray;
 }
 
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+// 📱 Tablet — 768px
+@media (max-width: 768px) {
+  .products-page {
+    flex-direction: column;  // sidebar upar, products neeche
+    gap: 1rem;
+  }
+
+  .sidebar {
+    width: 100%;
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    li {
+      margin-bottom: 0;
+    }
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+}
+
+// 📱 Mobile — 480px
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);  // 2 columns
+    gap: 0.8rem;
+  }
+
+  .search-bar {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
 }

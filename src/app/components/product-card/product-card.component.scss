@@ -91,3 +91,14 @@ h3 a:hover {
   background: #ccc;
   cursor: not-allowed;
 }
+
+// 👇 Mobile pe image chhoti
+@media (max-width: 480px) {
+  .product-img {
+    height: 150px;
+  }
+
+  .product-info {
+    padding: 0.7rem;
+  }
+}
