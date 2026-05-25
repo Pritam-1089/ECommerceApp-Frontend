@@ -22,10 +22,23 @@ export class AuthService {
       .pipe(tap(res => { if (res.success) this.setUser(res.data); }));
   }
 
-  logout(): void {
+  logout(showExpiredMessage = false): void {
     localStorage.removeItem('ecom_user');
     localStorage.removeItem('ecom_token');
     this.currentUserSubject.next(null);
+
+    if (showExpiredMessage) {
+      localStorage.setItem('session_expired', 'true');
+    }
+  }
+
+  checkSessionExpired(): boolean {
+    const expired = localStorage.getItem('session_expired');
+    if (expired) {
+      localStorage.removeItem('session_expired');
+      return true;
+    }
+    return false;
   }
 
   getToken(): string | null {
@@ -33,24 +46,16 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-  const token = this.getToken();
+    const token = this.getToken();
+    if (!token) return false;
 
-  // Step 1: token exist nahi hai
-  if (!token) return false;
-
-  try {
-    // Step 2: payload decode karo
-    const payload = JSON.parse(atob(token.split('.')[1]));
-
-    // Step 3: expiry check karo
-    return payload.exp * 1000 > Date.now();
-
-  } catch (error) {
-    // Step 4: invalid token handle
-    return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 > Date.now();
+    } catch (error) {
+      return false;
+    }
   }
-}
-
 
   isAdmin(): boolean {
     return this.currentUserSubject.value?.role === 'Admin';
